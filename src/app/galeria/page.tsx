@@ -18,11 +18,26 @@ export default function GaleriaPage () {
         console.table(result);
     }
 
+    function renderImageCard(image: Image) {
+        return (
+            <ImageCard nome={image.name} 
+            tamanho={image.size + ' MB'} 
+            dataUpload={image.uploadDate} 
+            src={image.url} />
+        )
+    }
+
+    function renderImageCards() {
+        return images.map(renderImageCard);
+    }
+
     return (
         <Template>
-            <section className="grid grid-cols-3 gap-8">
-                <button onClick={searchImages} className="bg-blue-500 text-white px-4 py-2 rounded mb-4">Mudar Imagem</button>
-                <ImageCard src="" tamanho="10MB" dataUpload="2024-02-20" />
+            <button onClick={searchImages} className="bg-blue-500 text-white px-4 py-2 rounded mb-4">Mudar Imagem</button>          
+            <section className="grid grid-cols-4 gap-8">
+                {
+                    renderImageCards()
+                }
             </section>
         </Template>
     )
