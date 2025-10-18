@@ -24,8 +24,9 @@ export default function GaleriaPage () {
             <ImageCard 
             key={image.url}
             nome={image.name} 
-            tamanho={image.size + ' MB'} 
+            tamanho={image.size} 
             dataUpload={image.uploadDate} 
+            extension={image.extension}
             src={image.url} />
         )
     }
