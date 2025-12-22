@@ -3,6 +3,7 @@
 import { Template } from "@/components/Template";
 import { ImageCard } from "@/components/ImageCard";
 import { Button } from "@/components/button/Button";
+import { InputText } from "@/components/input/InputText";
 import { useState } from "react"; 
 import { useImageService } from "@/resources/image/image.service";
 import { Image } from "@/resources/image/image.resources";
@@ -43,10 +44,7 @@ export default function GaleriaPage () {
         <Template loading={loading}>
             <section className="flex flex-col items-center justify-center my-8">
                 <div className="flex space-x-4">
-                    <input type='text' 
-                    onChange = {event => setQuery(event.target.value)}
-                    placeholder="Buscar imagens..." 
-                    className="border px-3 py-3 rounded-lg text-gray-900 " />
+                    <InputText onChange={event => setQuery(event.target.value)} placeholder="Buscar imagens..." />
                     <select 
                     onChange={event => setExtension(event.target.value)} 
                     className="border px-4 py-2 rounded-lg text-gray-900">
