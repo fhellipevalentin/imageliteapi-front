@@ -1,5 +1,9 @@
+import { Button } from "@/components/button/Button";
 import { InputText } from "@/components/input/InputText"
 import { Template } from "@/components/Template"
+import { ArrowLeftIcon } from '@heroicons/react/24/outline'; 
+
+import Link from "next/link"
 
 export default function FormularioPage() {
     
@@ -9,7 +13,14 @@ export default function FormularioPage() {
               <h5 className="mt-3  mb-10 text-3xl font-extrabold tracking-tight text-gray-900">Nova Imagem:</h5>    
                 <form className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
                     <div className="grid grid-cols-1 gap-6 mb-6">
-                        <label className="blockfont-high text-gray-700 mb-2">Nome da Imagem:</label>
+                        <Link href="/galeria">
+                            <Button type="button" style="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mb-4 flex items-center">
+                                <ArrowLeftIcon className="w-5 h-5 mr-2" /> Voltar
+                            </Button>
+                        </Link>
+                    </div>
+                    <div className="grid grid-cols-1 gap-6 mb-6">
+                        <label className="block font-medium  text-gray-700 mb-2">Nome da Imagem:</label>
                         <InputText placeholder= "digite o nome da imagem" style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" /> 
                     </div>
                     <div className="grid grid-cols-1 gap-6 mb-6">
@@ -30,6 +41,8 @@ export default function FormularioPage() {
                             </label>
                         </div>
                     </div>
+                    <Button label="Enviar" type="submit" style="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" />
+                    <Button label="Cancelar" type="reset" style="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-4" />
                 </form>
             </section>
         </Template>
