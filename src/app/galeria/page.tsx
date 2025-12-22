@@ -2,6 +2,7 @@
 
 import { Template } from "@/components/Template";
 import { ImageCard } from "@/components/ImageCard";
+import { Button } from "@/components/button/Button";
 import { useState } from "react"; 
 import { useImageService } from "@/resources/image/image.service";
 import { Image } from "@/resources/image/image.resources";
@@ -54,9 +55,9 @@ export default function GaleriaPage () {
                         <option value="JPEG">JPEG</option>
                         <option value="GIF">GIF</option>
                     </select>
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-300" onClick={searchImages}>Search</button>
+                    <Button label="Search" style="bg-blue-500 hover:bg-blue-300 px-4 py-2" onClick={searchImages} />
                     <Link href="/formulario">
-                        <button className="bg-yellow-500 text-white px-4 py-4 rounded-lg hover:bg-yellow-300">Add New</button>
+                        <Button label="Add New" style="bg-yellow-500 hover:bg-yellow-300 px-4 py-3" />
                     </Link>
                 </div>
             </section>
