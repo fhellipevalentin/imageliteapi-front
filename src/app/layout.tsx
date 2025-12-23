@@ -3,7 +3,8 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 
 const roboto = Roboto({
-  subsets: ["latin"], weight: ["300"],
+  subsets: ["latin"],
+  weight: ["300"],
 });
 
 export const metadata: Metadata = {
@@ -18,9 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={roboto.className + " bg-gray-100 min-h-screen"}
-      >
+      <body className={roboto.className + " bg-gray-100 min-h-screen"}>
         {children}
       </body>
     </html>
