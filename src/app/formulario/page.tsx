@@ -8,36 +8,66 @@ import { useFormik } from "formik";
 import Link from "next/link"
 import { useState } from "react";
 import { RenderIf } from "@/components/Template";
+import { useImageService } from "@/resources/image/image.service";
+import imageCompression from 'browser-image-compression';
 
 
 interface FormProps {
-    nomeImagem: string;
+    name: string;
     tags: string;
-    imagem: File | null;
+    file: File | null;
 }
 
 
 export default function FormularioPage() {
 
     const [ imagePreviewUrl, setImagePreviewUrl ] = useState<string | null>(null);
+    const imageService = useImageService();
 
     const formik = useFormik<FormProps>({
         initialValues: {
-            nomeImagem: "",
+            name: "",
             tags: "",
-            imagem: null
+            file: null
         },
         onSubmit: (values) => {
-            console.log(values);
+            handleSubmit(values);
+            console.log(values); 
         }
     });
 
-    function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    async function handleSubmit(dados: FormProps) {
+        const formData = new FormData();
+        formData.append("name", dados.name);
+        formData.append("tags", dados.tags);
+        formData.append("file", dados.file!);
+        
+        await imageService.salvar(formData);
+        formik.resetForm();
+        setImagePreviewUrl(null);
+    }
+
+    async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            formik.setFieldValue("imagem", file);
-            const imagemUrl = URL.createObjectURL(file);
-            setImagePreviewUrl(imagemUrl);
+            
+            const options = {
+                maxSizeMB: 1, 
+                maxWidthOrHeight: 800,
+                useWebWorker: true,
+            };
+            
+            try {
+                const compressedFile = await imageCompression(file, options);
+                formik.setFieldValue("file", compressedFile);
+                const imagemUrl = URL.createObjectURL(compressedFile);
+                setImagePreviewUrl(imagemUrl);
+            } catch (error) {
+                console.error('Erro ao comprimir imagem:', error);
+                formik.setFieldValue("file", file);
+                const imagemUrl = URL.createObjectURL(file);
+                setImagePreviewUrl(imagemUrl);
+            }
         }
     }
 
@@ -55,11 +85,11 @@ export default function FormularioPage() {
                     </div>
                     <div className="grid grid-cols-1 gap-6 mb-6">
                         <label className="block font-medium  text-gray-700 mb-2">Nome da Imagem:</label>
-                        <InputText id="nomeImagem" onChange={formik.handleChange} placeholder="digite o nome da imagem" style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" /> 
+                        <InputText id="name" onChange={formik.handleChange} placeholder="digite o nome da imagem" style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" /> 
                     </div>
                     <div className="grid grid-cols-1 gap-6 mb-6">
                         <label className="block font-medium text-gray-700 mb-2">Tags:</label>
-                        <InputText placeholder= "digite as tags da imagem separadas por vírgula" style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" /> 
+                        <InputText id="tags" onChange={formik.handleChange} placeholder= "digite as tags da imagem separadas por vírgula" style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" /> 
                     </div>
                     <div className="grid grid-cols-1 gap-6 mb-6">
                         <label className="block font-medium text-gray-700 mb-2">Imagem:</label>
@@ -78,7 +108,7 @@ export default function FormularioPage() {
                                         <img src={imagePreviewUrl!} alt="Preview" className="max-h-28 -mt-6" />
                                     </RenderIf>
                                 </div>
-                                <input  type="file" className="hidden" onChange={handleImageChange} />         
+                                <input id="file" type="file" className="hidden" onChange={handleImageChange} />         
                             </label>
                         </div>
                     </div>

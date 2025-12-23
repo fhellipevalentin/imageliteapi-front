@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "browser-image-compression": "^2.0.2",
     "formik": "^2.4.5",
     "next": "15.5.4",
     "react": "19.1.0",
