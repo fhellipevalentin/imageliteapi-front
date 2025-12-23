@@ -5,6 +5,9 @@ import { InputText } from "@/components/input/InputText"
 import { Template } from "@/components/Template"
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'; 
 import { useFormik } from "formik";
+import Link from "next/link"
+import { useState } from "react";
+import { RenderIf } from "@/components/Template";
 
 
 interface FormProps {
@@ -13,10 +16,10 @@ interface FormProps {
     imagem: File | null;
 }
 
-import Link from "next/link"
-import { use } from "react";
 
 export default function FormularioPage() {
+
+    const [ imagePreviewUrl, setImagePreviewUrl ] = useState<string | null>(null);
 
     const formik = useFormik<FormProps>({
         initialValues: {
@@ -28,7 +31,16 @@ export default function FormularioPage() {
             console.log(values);
         }
     });
-    
+
+    function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            formik.setFieldValue("imagem", file);
+            const imagemUrl = URL.createObjectURL(file);
+            setImagePreviewUrl(imagemUrl);
+        }
+    }
+
     return (
         <Template>
             <section className="flex flex-col items-center justify-center my-8">
@@ -53,13 +65,20 @@ export default function FormularioPage() {
                         <label className="block font-medium text-gray-700 mb-2">Imagem:</label>
                         <div className="flex items-center justify-center w-full">
                             <label className="flex flex-col border-4 border-dashed w-full h-32 hover:bg-gray-100 hover:border-blue-300 group">
-                                <div className="flex flex-col items-center justify-center pt-7">
-                                    <svg className="w-10 h-10 text-gray-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                    </svg>
-                                    <p className="text-sm text-gray-400 group-hover:text-blue-600 pt-1 tracking-wider">Selecione uma imagem</p>
+                                <div className="flex flex-col items-center justify-center pt-7 ">
+                                    <RenderIf condition={imagePreviewUrl == null}>
+                                        <svg className="w-10 h-10 text-gray-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                    </RenderIf>
+                                    <RenderIf condition={imagePreviewUrl === null}>
+                                        <p className="text-sm text-gray-400 group-hover:text-blue-600 pt-1 tracking-wider">Selecione uma imagem</p>
+                                    </RenderIf>
+                                    <RenderIf condition={imagePreviewUrl !== null}>
+                                        <img src={imagePreviewUrl!} alt="Preview" className="max-h-28 -mt-6" />
+                                    </RenderIf>
                                 </div>
-                                <input type="file" className="hidden" />         
+                                <input  type="file" className="hidden" onChange={handleImageChange} />         
                             </label>
                         </div>
                     </div>
