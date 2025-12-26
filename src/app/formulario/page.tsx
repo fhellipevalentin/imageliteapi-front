@@ -18,6 +18,7 @@ interface FormProps {
 }
 
 export default function FormularioPage() {
+  const [loading, setLoading] = useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const imageService = useImageService();
 
@@ -34,6 +35,8 @@ export default function FormularioPage() {
   });
 
   async function handleSubmit(dados: FormProps) {
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("name", dados.name);
     formData.append("tags", dados.tags);
@@ -42,6 +45,8 @@ export default function FormularioPage() {
     await imageService.salvar(formData);
     formik.resetForm();
     setImagePreviewUrl(null);
+
+    setLoading(false);
   }
 
   async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -69,7 +74,7 @@ export default function FormularioPage() {
   }
 
   return (
-    <Template>
+    <Template loading={loading}>
       <section className="flex flex-col items-center justify-center my-8">
         <h5 className="mt-3  mb-10 text-3xl font-extrabold tracking-tight text-gray-900">
           Nova Imagem:
@@ -95,6 +100,7 @@ export default function FormularioPage() {
             <InputText
               id="name"
               onChange={formik.handleChange}
+              value={formik.values.name}
               placeholder="digite o nome da imagem"
               style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
@@ -106,6 +112,7 @@ export default function FormularioPage() {
             <InputText
               id="tags"
               onChange={formik.handleChange}
+              value={formik.values.tags}
               placeholder="digite as tags da imagem separadas por vírgula"
               style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
@@ -162,7 +169,11 @@ export default function FormularioPage() {
           />
           <Button
             label="Cancelar"
-            type="reset"
+            type="button"
+            onClick={() => {
+              formik.resetForm();
+              setImagePreviewUrl(null);
+            }}
             style="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-4"
           />
         </form>

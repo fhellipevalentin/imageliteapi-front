@@ -5,6 +5,7 @@ interface InputTextProps {
   style?: string;
   placeholder?: string;
   id?: string;
+  value?: string;
 }
 
 export const InputText: React.FC<InputTextProps> = ({
@@ -12,16 +13,16 @@ export const InputText: React.FC<InputTextProps> = ({
   style,
   placeholder,
   id,
+  value,
 }: InputTextProps) => {
   return (
     <input
       type="text"
       onChange={onChange}
       placeholder={placeholder}
+      value={value}
       id={id}
       className={`border px-3 py-3 rounded-lg text-gray-900 ${style}`}
     />
   );
 };
-
-AsyncDisposableStack
