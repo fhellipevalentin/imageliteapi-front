@@ -10,6 +10,7 @@ import { useState } from "react";
 import { RenderIf } from "@/components/Template";
 import { useImageService } from "@/resources/image/image.service";
 import imageCompression from "browser-image-compression";
+import { useNotification } from "@/components/notification";
 
 interface FormProps {
   name: string;
@@ -21,6 +22,7 @@ export default function FormularioPage() {
   const [loading, setLoading] = useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const imageService = useImageService();
+  const notification = useNotification();
 
   const formik = useFormik<FormProps>({
     initialValues: {
@@ -43,6 +45,7 @@ export default function FormularioPage() {
     formData.append("file", dados.file!);
 
     await imageService.salvar(formData);
+    notification.notify("Imagem enviada com sucesso!", "success");
     formik.resetForm();
     setImagePreviewUrl(null);
 
@@ -66,6 +69,7 @@ export default function FormularioPage() {
         setImagePreviewUrl(imagemUrl);
       } catch (error) {
         console.error("Erro ao comprimir imagem:", error);
+        notification.notify("Erro ao comprimir imagem", "error");
         formik.setFieldValue("file", file);
         const imagemUrl = URL.createObjectURL(file);
         setImagePreviewUrl(imagemUrl);

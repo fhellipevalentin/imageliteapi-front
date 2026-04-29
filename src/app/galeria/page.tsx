@@ -7,6 +7,8 @@ import { InputText } from "@/components/input/InputText";
 import { useState } from "react";
 import { useImageService } from "@/resources/image/image.service";
 import { Image } from "@/resources/image/image.resources";
+import { useNotification } from "@/components/notification";
+
 import Link from "next/link";
 
 export default function GaleriaPage() {
@@ -15,12 +17,25 @@ export default function GaleriaPage() {
   const [query, setQuery] = useState<string>("");
   const [extension, setExtension] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const notification = useNotification();
 
   async function searchImages() {
     setLoading(true);
     const result = await imageService.buscar(query, extension);
     setImages(result);
     setLoading(false);
+
+    switch (result.length) {
+      case 0:
+        notification.notify("Nenhuma imagem encontrada", "error");
+        break;
+      case 1:
+        notification.notify("1 imagem encontrada", "success");
+        break;
+      default:
+        notification.notify(`${result.length} imagens encontradas`, "success");
+        break;
+    }
   }
 
   function renderImageCard(image: Image) {
@@ -58,13 +73,13 @@ export default function GaleriaPage() {
             <option value="GIF">GIF</option>
           </select>
           <Button
-            label="Search"
+            label="Buscar"
             style="bg-blue-500 hover:bg-blue-300 px-4 py-2"
             onClick={searchImages}
           />
           <Link href="/formulario">
             <Button
-              label="Add New"
+              label="Adicionar Nova Imagem"
               style="bg-yellow-500 hover:bg-yellow-300 px-4 py-3"
             />
           </Link>
