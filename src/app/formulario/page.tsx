@@ -11,12 +11,8 @@ import { RenderIf } from "@/components/Template";
 import { useImageService } from "@/resources/image/image.service";
 import imageCompression from "browser-image-compression";
 import { useNotification } from "@/components/notification";
-
-interface FormProps {
-  name: string;
-  tags: string;
-  file: File | null;
-}
+import { FormProps, initialValues } from "./formScheme";
+import { validationSchema } from "./formScheme";
 
 export default function FormularioPage() {
   const [loading, setLoading] = useState(false);
@@ -25,15 +21,11 @@ export default function FormularioPage() {
   const notification = useNotification();
 
   const formik = useFormik<FormProps>({
-    initialValues: {
-      name: "",
-      tags: "",
-      file: null,
-    },
+    initialValues: initialValues,
     onSubmit: (values) => {
       handleSubmit(values);
-      console.log(values);
     },
+    validationSchema: validationSchema,
   });
 
   async function handleSubmit(dados: FormProps) {
@@ -87,7 +79,7 @@ export default function FormularioPage() {
           onSubmit={formik.handleSubmit}
           className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md"
         >
-          <div className="grid grid-cols-1 gap-6 mb-6">
+          <div className="grid grid-cols-1 mb-6">
             <Link href="/galeria">
               <Button
                 type="button"
@@ -97,7 +89,7 @@ export default function FormularioPage() {
               </Button>
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-6 mb-6">
+          <div className="grid grid-cols-1 mb-6">
             <label className="block font-medium  text-gray-700 mb-2">
               Nome da Imagem:
             </label>
@@ -108,8 +100,13 @@ export default function FormularioPage() {
               placeholder="digite o nome da imagem"
               style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
+            {formik.errors.name && (
+              <span className="text-red-500 text-sm mt-1">
+                {formik.errors.name}
+              </span>
+            )}
           </div>
-          <div className="grid grid-cols-1 gap-6 mb-6">
+          <div className="grid grid-cols-1 mb-6">
             <label className="block font-medium text-gray-700 mb-2">
               Tags:
             </label>
@@ -120,11 +117,19 @@ export default function FormularioPage() {
               placeholder="digite as tags da imagem separadas por vírgula"
               style="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
+            {formik.errors.tags && (
+              <span className="text-red-500 text-sm mt-1">
+                {formik.errors.tags}
+              </span>
+            )}
           </div>
-          <div className="grid grid-cols-1 gap-6 mb-6">
+          <div className="grid grid-cols-1 mb-6">
             <label className="block font-medium text-gray-700 mb-2">
               Imagem:
             </label>
+            <span className="text-red-500 text-sm mt-1 mb-2">
+              {formik.errors.file}
+            </span>
             <div className="flex items-center justify-center w-full">
               <label className="flex flex-col border-4 border-dashed w-full h-32 hover:bg-gray-100 hover:border-blue-300 group">
                 <div className="flex flex-col items-center justify-center pt-7 ">
